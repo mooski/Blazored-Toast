@@ -19,6 +19,7 @@ namespace Blazored.Toast
 
         private string StateCssClass { get; set; }
         private string ProgressBarStyle { get; set; }
+        private System.Timers.Timer OpenTimer { get; set; }
         private System.Timers.Timer CloseTimer { get; set; }
         private Stopwatch CloseTimerStopwatch { get; set; } = new Stopwatch();
 
@@ -27,6 +28,10 @@ namespace Blazored.Toast
 
         protected override void OnInitialized()
         {
+            OpenTimer = new System.Timers.Timer(1) { AutoReset = false };
+            OpenTimer.Elapsed += HandleOpenTimerElapsed;
+            OpenTimer.Start();
+
             CloseTimer = new System.Timers.Timer(TimeSpan.FromSeconds(Timeout).TotalMilliseconds) { AutoReset = false };
             CloseTimer.Elapsed += HandleCloseTimerElapsed;
             CloseTimer.Start();
@@ -34,17 +39,15 @@ namespace Blazored.Toast
             UpdateProgressBarStyle();
         }
 
+        private void HandleOpenTimerElapsed(object sender, System.Timers.ElapsedEventArgs e)
+        {
+            StateCssClass = "blazored-toast-open";
+            InvokeAsync(StateHasChanged);
+        }
+
         private void HandleCloseTimerElapsed(object sender, System.Timers.ElapsedEventArgs e)
         {
             Close();
-        }
-
-        protected override void OnAfterRender(bool firstRender)
-        {
-            if (firstRender)
-            {
-                StateCssClass = "blazored-toast-open";
-            }
         }
 
         private async void Close()
@@ -101,6 +104,10 @@ namespace Blazored.Toast
             {
                 if (disposing)
                 {
+                    OpenTimer.Elapsed -= HandleOpenTimerElapsed;
+                    OpenTimer.Dispose();
+                    OpenTimer = null;
+
                     CloseTimer.Elapsed -= HandleCloseTimerElapsed;
                     CloseTimer.Dispose();
                     CloseTimer = null;
