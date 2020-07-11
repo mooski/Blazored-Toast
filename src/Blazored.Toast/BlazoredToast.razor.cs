@@ -16,17 +16,16 @@ namespace Blazored.Toast
         [Parameter] public int Timeout { get; set; }
 
         private string StateCssClass { get; set; }
+        private string ProgressBarStyle { get; set; }
+        private Timer CloseTimer { get; set; }
 
-        private CountdownTimer _countdownTimer;
-        private int _progress = 100;
         private int _isClosing = 0;
+        private bool _disposedValue;
 
         protected override void OnInitialized()
         {
-            _countdownTimer = new CountdownTimer(Timeout);
-            _countdownTimer.OnTick += CalculateProgress;
-            _countdownTimer.OnElapsed += () => { Close(); };
-            _countdownTimer.Start();
+            CloseTimer = new Timer((state) => { Close(); }, null, TimeSpan.FromSeconds(Timeout), TimeSpan.FromMilliseconds(-1));
+            ProgressBarStyle = $"animation: blazored-toast-progressbar {Timeout}s linear";
         }
 
         protected override void OnAfterRender(bool firstRender)
@@ -35,12 +34,6 @@ namespace Blazored.Toast
             {
                 StateCssClass = "blazored-toast-open";
             }
-        }
-
-        private async void CalculateProgress(int percentComplete)
-        {
-            _progress = 100 - percentComplete;
-            await InvokeAsync(StateHasChanged);
         }
 
         private async void Close()
@@ -65,10 +58,24 @@ namespace Blazored.Toast
             return string.Join(" ", cssClasses.Where(c => !string.IsNullOrEmpty(c)));
         }
 
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!_disposedValue)
+            {
+                if (disposing)
+                {
+                    CloseTimer.Dispose();
+                }
+
+                _disposedValue = true;
+            }
+        }
+
         public void Dispose()
         {
-            _countdownTimer.Dispose();
-            _countdownTimer = null;
+            // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
+            Dispose(disposing: true);
+            GC.SuppressFinalize(this);
         }
     }
 }
