@@ -91,7 +91,7 @@ namespace Blazored.Toast
         {
             if (ToastSettings.PauseTimeoutOnMouseOver)
             {
-                CloseTimer.Interval = TimeSpan.FromSeconds(Timeout).TotalMilliseconds - CloseTimerStopwatch.ElapsedMilliseconds;
+                CloseTimer.Interval = Math.Max(TimeSpan.FromSeconds(Timeout).TotalMilliseconds - CloseTimerStopwatch.ElapsedMilliseconds, 1);
                 CloseTimer.Start();
                 CloseTimerStopwatch.Start();
                 UpdateProgressBarStyle();
