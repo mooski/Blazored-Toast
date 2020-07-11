@@ -64,6 +64,7 @@ Toasts are configured using parameters on the `<BlazoredToasts />` component. Th
 - IconType (Default: IconType.FontAwesome)
 - Position (Default: ToastPosition.TopRight)
 - Timeout (Default: 5)
+- PauseTimeoutOnMouseOver
 - CloseDelay
 
 By default, you don't need to provide any settings everything will just work. But if you want to add icons to toasts or override the default styling then you can use the options above to do that. 
