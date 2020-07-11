@@ -12,6 +12,7 @@ namespace Blazored.Toast.Configuration
             string baseClass,
             string additionalClasses,
             string icon,
+            bool pauseTimeoutOnMouseOver,
             bool showProgressBar,
             TimeSpan? closeDelay)
         {
@@ -21,6 +22,7 @@ namespace Blazored.Toast.Configuration
             BaseClass = baseClass;
             AdditionalClasses = additionalClasses;
             Icon = icon;
+            PauseTimeoutOnMouseOver = pauseTimeoutOnMouseOver;
             ShowProgressBar = showProgressBar;
             CloseDelay = closeDelay;
         }
@@ -31,6 +33,7 @@ namespace Blazored.Toast.Configuration
         public string AdditionalClasses { get; set; }
         public string Icon { get; set; }
         public IconType? IconType { get; set; }
+        public bool PauseTimeoutOnMouseOver { get; set; }
         public bool ShowProgressBar { get; set; }
         public TimeSpan? CloseDelay { get; set; }
     }

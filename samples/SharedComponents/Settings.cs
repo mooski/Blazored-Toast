@@ -7,6 +7,7 @@ namespace SharedComponents
     {
         public ToastPosition Position { get; set; } = ToastPosition.BottomRight;
         public int TimeoutSeconds { get; set; } = 10;
+        public bool PauseTimeoutOnMouseOver { get; set; }
         public bool ShowProgressBar { get; set; }
         public TimeSpan? CloseDelay { get; set; }
         public string CustomCssClass { get; set; }

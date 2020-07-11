@@ -43,6 +43,7 @@ namespace Blazored.Toast
         }
 
         [Parameter] public int Timeout { get; set; } = 5;
+        [Parameter] public bool PauseTimeoutOnMouseOver { get; set; }
         [Parameter] public bool RemoveToastsOnNavigation { get; set; }
         [Parameter] public bool ShowProgressBar { get; set; }
         [Parameter] public TimeSpan? CloseDelay { get; set; }
@@ -93,16 +94,16 @@ namespace Blazored.Toast
             switch (level)
             {
                 case ToastLevel.Error:
-                    return new ToastSettings(string.IsNullOrWhiteSpace(heading) ? "Error" : heading, message, IconType, "blazored-toast-error", ErrorClass, ErrorIcon, ShowProgressBar, CloseDelay);
+                    return new ToastSettings(string.IsNullOrWhiteSpace(heading) ? "Error" : heading, message, IconType, "blazored-toast-error", ErrorClass, ErrorIcon, PauseTimeoutOnMouseOver, ShowProgressBar, CloseDelay);
 
                 case ToastLevel.Info:
-                    return new ToastSettings(string.IsNullOrWhiteSpace(heading) ? "Info" : heading, message, IconType, "blazored-toast-info", InfoClass, InfoIcon, ShowProgressBar, CloseDelay);
+                    return new ToastSettings(string.IsNullOrWhiteSpace(heading) ? "Info" : heading, message, IconType, "blazored-toast-info", InfoClass, InfoIcon, PauseTimeoutOnMouseOver, ShowProgressBar, CloseDelay);
 
                 case ToastLevel.Success:
-                    return new ToastSettings(string.IsNullOrWhiteSpace(heading) ? "Success" : heading, message, IconType, "blazored-toast-success", SuccessClass, SuccessIcon, ShowProgressBar, CloseDelay);
+                    return new ToastSettings(string.IsNullOrWhiteSpace(heading) ? "Success" : heading, message, IconType, "blazored-toast-success", SuccessClass, SuccessIcon, PauseTimeoutOnMouseOver, ShowProgressBar, CloseDelay);
 
                 case ToastLevel.Warning:
-                    return new ToastSettings(string.IsNullOrWhiteSpace(heading) ? "Warning" : heading, message, IconType, "blazored-toast-warning", WarningClass, WarningIcon, ShowProgressBar, CloseDelay);
+                    return new ToastSettings(string.IsNullOrWhiteSpace(heading) ? "Warning" : heading, message, IconType, "blazored-toast-warning", WarningClass, WarningIcon, PauseTimeoutOnMouseOver, ShowProgressBar, CloseDelay);
             }
 
             throw new InvalidOperationException();

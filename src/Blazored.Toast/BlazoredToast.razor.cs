@@ -1,6 +1,8 @@
 ﻿using Blazored.Toast.Configuration;
 using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components.Web;
 using System;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -17,15 +19,24 @@ namespace Blazored.Toast
 
         private string StateCssClass { get; set; }
         private string ProgressBarStyle { get; set; }
-        private Timer CloseTimer { get; set; }
+        private System.Timers.Timer CloseTimer { get; set; }
+        private Stopwatch CloseTimerStopwatch { get; set; } = new Stopwatch();
 
         private int _isClosing = 0;
         private bool _disposedValue;
 
         protected override void OnInitialized()
         {
-            CloseTimer = new Timer((state) => { Close(); }, null, TimeSpan.FromSeconds(Timeout), TimeSpan.FromMilliseconds(-1));
-            ProgressBarStyle = $"animation: blazored-toast-progressbar {Timeout}s linear";
+            CloseTimer = new System.Timers.Timer(TimeSpan.FromSeconds(Timeout).TotalMilliseconds) { AutoReset = false };
+            CloseTimer.Elapsed += HandleCloseTimerElapsed;
+            CloseTimer.Start();
+            CloseTimerStopwatch.Start();
+            UpdateProgressBarStyle();
+        }
+
+        private void HandleCloseTimerElapsed(object sender, System.Timers.ElapsedEventArgs e)
+        {
+            Close();
         }
 
         protected override void OnAfterRender(bool firstRender)
@@ -58,13 +69,41 @@ namespace Blazored.Toast
             return string.Join(" ", cssClasses.Where(c => !string.IsNullOrEmpty(c)));
         }
 
+        private void UpdateProgressBarStyle()
+        {
+            ProgressBarStyle = $"animation: blazored-toast-progressbar {Timeout}s linear {(CloseTimer.Enabled ? "running" : "paused")};";
+        }
+
+        private void HandleMouseOver(MouseEventArgs args)
+        {
+            if (ToastSettings.PauseTimeoutOnMouseOver)
+            {
+                CloseTimer.Stop();
+                CloseTimerStopwatch.Stop();
+                UpdateProgressBarStyle();
+            }
+        }
+
+        private void HandleMouseOut(MouseEventArgs args)
+        {
+            if (ToastSettings.PauseTimeoutOnMouseOver)
+            {
+                CloseTimer.Interval = TimeSpan.FromSeconds(Timeout).TotalMilliseconds - CloseTimerStopwatch.ElapsedMilliseconds;
+                CloseTimer.Start();
+                CloseTimerStopwatch.Start();
+                UpdateProgressBarStyle();
+            }
+        }
+
         protected virtual void Dispose(bool disposing)
         {
             if (!_disposedValue)
             {
                 if (disposing)
                 {
+                    CloseTimer.Elapsed -= HandleCloseTimerElapsed;
                     CloseTimer.Dispose();
+                    CloseTimer = null;
                 }
 
                 _disposedValue = true;

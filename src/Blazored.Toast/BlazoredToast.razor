@@ -1,6 +1,6 @@
 ﻿@using Microsoft.AspNetCore.Components.Web
 
-<div class="@JoinCssClasses("blazored-toast", StateCssClass, ToastSettings.BaseClass, ToastSettings.AdditionalClasses)">
+<div class="@JoinCssClasses("blazored-toast", StateCssClass, ToastSettings.BaseClass, ToastSettings.AdditionalClasses)" @onmouseover="HandleMouseOver" @onmouseout="HandleMouseOut">
 
     @if (!string.IsNullOrWhiteSpace(ToastSettings.Icon))
     {

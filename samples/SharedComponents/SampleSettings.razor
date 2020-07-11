@@ -34,6 +34,13 @@
                 <hr />
                 <div>
                     <label class="form-check-label">
+                        <input type="checkbox" checked="@(Settings.PauseTimeoutOnMouseOver)" @onchange="(args) => HandlePauseTimeoutOnMouseOverChanged(bool.Parse(args.Value.ToString()))" />
+                        PauseTimeoutOnMouseOver
+                    </label>
+                </div>
+                <hr />
+                <div>
+                    <label class="form-check-label">
                         <input type="checkbox" checked="@(Settings.ShowProgressBar)" @onchange="(args) => HandleShowProgressBarChanged(bool.Parse(args.Value.ToString()))" />
                         ShowProgressBar
                     </label>
@@ -124,6 +131,12 @@
     private void HandlePositionChanged(ToastPosition position)
     {
         Settings.Position = position;
+        OnSettingsUpdated.InvokeAsync(null);
+    }
+
+    private void HandlePauseTimeoutOnMouseOverChanged(bool pauseTimeoutOnMouseOver)
+    {
+        Settings.PauseTimeoutOnMouseOver = pauseTimeoutOnMouseOver;
         OnSettingsUpdated.InvokeAsync(null);
     }
 
